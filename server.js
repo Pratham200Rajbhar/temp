@@ -9,7 +9,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Replace this with your MongoDB connection string
 const connectionString = 'mongodb+srv://PrathamRajbhar:PrathamRajbhar@cluster0.5c9zh.mongodb.net/test';
 
 mongoose.connect(connectionString, {
@@ -19,7 +18,6 @@ mongoose.connect(connectionString, {
     .then(() => console.log('Database connected successfully'))
     .catch((err) => console.error('Database connection error:', err));
 
-// Project Schema and Model
 const projectSchema = new mongoose.Schema({
     thumbnail: String,
     title: String,
@@ -28,6 +26,13 @@ const projectSchema = new mongoose.Schema({
     demo: String,
     isBlog: Boolean,
 }, { collection: 'projectslist' });
+
+const contactSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    message: String,
+}, { collection: 'contact' });
+
 
 const Project = mongoose.model('Project', projectSchema);
 
@@ -52,16 +57,9 @@ app.post('/getData', async (req, res) => {
     }
 });
 
-// Contact Schema and Model
-const contactSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    message: String,
-}, { collection: 'contact' });
 
 const Contact = mongoose.model('Contact', contactSchema);
 
-// POST route to save contact form data
 app.post('/api/contact', async (req, res) => {
     const { name, email, message } = req.body;
 
@@ -88,6 +86,10 @@ app.get('/projects', async (req, res) => {
         console.error('Error fetching projects:', error);
         res.status(500).send('Server error');
     }
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 
 app.listen(port, () => {
